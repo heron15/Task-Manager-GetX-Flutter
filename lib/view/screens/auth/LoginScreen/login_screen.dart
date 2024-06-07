@@ -27,6 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: BackgroundWidget(
         child: SafeArea(
           child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: Padding(
               padding: const EdgeInsets.all(26),
               child: Column(

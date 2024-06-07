@@ -24,6 +24,7 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
       body: BackgroundWidget(
         child: SafeArea(
           child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: Padding(
               padding: const EdgeInsets.all(26),
               child: Column(

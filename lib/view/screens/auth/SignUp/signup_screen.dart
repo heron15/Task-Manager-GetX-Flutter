@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/view/widgets/background_widget.dart';
+import 'package:task_manager/view/widgets/elevated_text_button.dart';
+import 'package:task_manager/view/widgets/one_button_dialog.dart';
 
 import '../../../../utils/app_color.dart';
+import '../../../../utils/app_route.dart';
+import '../../../utility/on_tap_action.dart';
 import '../../../utility/validate_checking_fun.dart';
 import '../../../widgets/bottom_rich_text.dart';
 import '../../../widgets/elevated_icon_button.dart';
@@ -29,6 +33,7 @@ class _SignupScreenState extends State<SignupScreen> {
       body: BackgroundWidget(
         child: SafeArea(
           child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: Padding(
               padding: const EdgeInsets.all(26),
               child: Column(
@@ -156,7 +161,18 @@ class _SignupScreenState extends State<SignupScreen> {
                         ///------Sign Up Button------///
                         ElevatedIconButton(
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {}
+                            if (_formKey.currentState!.validate()) {
+                              oneButtonDialog(
+                                context,
+                                AppColor.themeColor,
+                                "Success!",
+                                "Now login your account.",
+                                Icons.task_alt,
+                                (){
+                                  OnTapAction.onTapRemoveUntil(context, AppRoute.loginScreen);
+                                },
+                              );
+                            }
                           },
                         ),
 

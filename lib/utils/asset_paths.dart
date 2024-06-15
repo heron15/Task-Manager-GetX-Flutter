@@ -4,4 +4,5 @@ class AssetPaths {
 
   static const String backgroundSvg = "$_imagePath/background.svg";
   static const String transAppLogo = "$_imagePath/trans_app_logo.svg";
+  static const String profilePicture = "$_imagePath/profile_picture.png";
 }

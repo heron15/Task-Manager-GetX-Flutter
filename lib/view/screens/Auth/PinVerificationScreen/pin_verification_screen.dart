@@ -5,7 +5,7 @@ import 'package:task_manager/view/widgets/background_widget.dart';
 import '../../../utility/on_tap_action.dart';
 import '../../../widgets/bottom_rich_text.dart';
 import '../../../widgets/elevated_text_button.dart';
-import 'custom_pin_code_text_field.dart';
+import 'inner/custom_pin_code_text_field.dart';
 
 class PinVerificationScreen extends StatefulWidget {
   const PinVerificationScreen({super.key});

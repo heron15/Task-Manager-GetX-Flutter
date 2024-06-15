@@ -100,7 +100,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ///------Login Button------///
                         ElevatedIconButton(
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {}
+                            if (_formKey.currentState!.validate()) {
+                              OnTapAction.onTapGoMainBottomBar(context);
+                            }
                           },
                         ),
 

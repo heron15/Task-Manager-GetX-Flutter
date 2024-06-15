@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/themes/app_bar.dart';
 import 'package:task_manager/themes/elevated_button.dart';
 import 'package:task_manager/themes/input_decoration.dart';
 import 'package:task_manager/themes/text_theme.dart';
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
         inputDecorationTheme: getInputDecorationTheme(),
         elevatedButtonTheme: getElevatedButtonThemeData(),
         textTheme: getTextTheme(),
+        appBarTheme: getAppBarTheme(),
       ),
     );
   }

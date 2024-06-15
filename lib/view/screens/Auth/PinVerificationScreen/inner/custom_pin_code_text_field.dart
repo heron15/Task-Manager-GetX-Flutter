@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-import '../../../../utils/app_color.dart';
-import '../../../utility/validate_checking_fun.dart';
+import '../../../../../utils/app_color.dart';
+import '../../../../utility/validate_checking_fun.dart';
 
 PinCodeTextField CustomPinCodeTextField(
   BuildContext context,

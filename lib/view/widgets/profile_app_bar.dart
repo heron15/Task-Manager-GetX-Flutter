@@ -10,7 +10,7 @@ AppBar profileAppBar(BuildContext context) {
       padding: const EdgeInsets.only(left: 15),
       child: GestureDetector(
         onTap: () {
-          OnTapAction.onTapGoProfileScreen(context);
+          OnTapAction.onTapGoUpdateProfileScreen(context);
         },
         child: const CircleAvatar(
           backgroundColor: AppColor.white,
@@ -22,7 +22,7 @@ AppBar profileAppBar(BuildContext context) {
     ),
     title: GestureDetector(
       onTap: (){
-        OnTapAction.onTapGoProfileScreen(context);
+        OnTapAction.onTapGoUpdateProfileScreen(context);
       },
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,

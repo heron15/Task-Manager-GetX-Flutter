@@ -18,6 +18,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text("Add Task"),
         leading: IconButton(
           icon: const Icon(
             Icons.close,
@@ -88,6 +89,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                     height: 15,
                   ),
                   ElevatedIconButton(
+                    icon: Icons.arrow_circle_right_outlined,
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {}
                     },

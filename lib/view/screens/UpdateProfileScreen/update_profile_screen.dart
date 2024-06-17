@@ -1,27 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/data/model/network_response.dart';
-import 'package:task_manager/data/network_caller/network_caller.dart';
-import 'package:task_manager/utils/api_url.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:task_manager/utils/app_color.dart';
+import 'package:task_manager/view/utility/validate_checking_fun.dart';
 import 'package:task_manager/view/widgets/background_widget.dart';
-import 'package:task_manager/view/widgets/elevated_text_button.dart';
-import 'package:task_manager/view/widgets/loading_dialog.dart';
+import 'package:task_manager/view/widgets/elevated_icon_button.dart';
 import 'package:task_manager/view/widgets/one_button_dialog.dart';
+import 'inner/photo_picker_widget.dart';
 
-import '../../../../utils/app_color.dart';
-import '../../../../utils/app_route.dart';
-import '../../../utility/on_tap_action.dart';
-import '../../../utility/validate_checking_fun.dart';
-import '../../../widgets/bottom_rich_text.dart';
-import '../../../widgets/elevated_icon_button.dart';
-
-class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key});
+class UpdateProfileScreen extends StatefulWidget {
+  const UpdateProfileScreen({super.key});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  State<UpdateProfileScreen> createState() => _UpdateProfileScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final TextEditingController _emailTextEditingController = TextEditingController();
   final TextEditingController _firstNameTextEditingController = TextEditingController();
   final TextEditingController _lastNameTextEditingController = TextEditingController();
@@ -30,118 +23,132 @@ class _SignupScreenState extends State<SignupScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool _obscureText = true;
-  bool _registerInProgress = false;
+
+  final ImagePicker _imagePicker = ImagePicker();
+  XFile? _selectedImage;
+
+  Future<void> pickImage() async {
+    final XFile? pickedFile = await _imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = pickedFile;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Update Profile"),
+      ),
       body: BackgroundWidget(
         child: SafeArea(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Padding(
-              padding: const EdgeInsets.all(26),
+              padding: const EdgeInsets.only(left: 35, right: 35),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ///------Header Text------///
-
                   const SizedBox(
-                    height: 80,
+                    height: 70,
                   ),
+
+                  ///------Update profile text------///
                   Text(
-                    "Join With Us",
+                    "Update Profile",
                     style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(
+                    height: 20,
                   ),
                   Form(
                     key: _formKey,
                     child: Column(
                       children: [
+                        ///------photo picker field------///
+                        photoPickerWidget(
+                          () => pickImage(),
+                          _selectedImage?.name,
+                        ),
                         const SizedBox(
-                          height: 16,
+                          height: 10,
                         ),
 
-                        ///------Email Text Field------///
+                        ///------email text form field------///
                         TextFormField(
                           controller: _emailTextEditingController,
-                          keyboardType: TextInputType.emailAddress,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          cursorColor: AppColor.themeColor,
+                          keyboardType: TextInputType.emailAddress,
                           decoration: const InputDecoration(
-                            hintText: "Email",
+                            hintText: 'Email',
                           ),
                           validator: (String? value) {
                             return ValidateCheckingFun.validateEmail(value);
                           },
                         ),
-
                         const SizedBox(
                           height: 10,
                         ),
 
-                        ///------First Name Text Field------///
+                        ///------First text form field------///
                         TextFormField(
                           controller: _firstNameTextEditingController,
-                          keyboardType: TextInputType.name,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          cursorColor: AppColor.themeColor,
+                          keyboardType: TextInputType.name,
                           decoration: const InputDecoration(
-                            hintText: "First Name",
+                            hintText: 'First Name',
                           ),
                           validator: (String? value) {
                             return ValidateCheckingFun.validateFirstName(value);
                           },
                         ),
-
                         const SizedBox(
                           height: 10,
                         ),
 
-                        ///------Last Name Text Field------///
+                        ///------Last name text form field------///
                         TextFormField(
                           controller: _lastNameTextEditingController,
-                          keyboardType: TextInputType.name,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          cursorColor: AppColor.themeColor,
+                          keyboardType: TextInputType.name,
                           decoration: const InputDecoration(
-                            hintText: "Last Name",
+                            hintText: 'Last Name',
                           ),
                           validator: (String? value) {
-                            return ValidateCheckingFun.validateLastName(value);
+                            return ValidateCheckingFun.validateFirstName(value);
                           },
                         ),
-
                         const SizedBox(
                           height: 10,
                         ),
 
-                        ///------Mobile Text Field------///
+                        ///------Mobile text form field------///
                         TextFormField(
                           controller: _mobileTextEditingController,
-                          keyboardType: TextInputType.number,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          cursorColor: AppColor.themeColor,
+                          keyboardType: TextInputType.number,
                           decoration: const InputDecoration(
-                            hintText: "Mobile",
+                            hintText: 'Mobile',
                           ),
                           validator: (String? value) {
                             return ValidateCheckingFun.validateNumber(value);
                           },
                         ),
-
                         const SizedBox(
                           height: 10,
                         ),
 
-                        ///------Password Text Field------///
+                        ///------Password text form field------///
                         TextFormField(
                           controller: _passwordTextEditingController,
-                          keyboardType: TextInputType.visiblePassword,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          cursorColor: AppColor.themeColor,
+                          keyboardType: TextInputType.visiblePassword,
                           obscureText: _obscureText,
                           decoration: InputDecoration(
-                            hintText: "Password",
+                            hintText: 'Password',
                             suffixIcon: IconButton(
                               onPressed: () {
                                 setState(() {
@@ -155,36 +162,32 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                           ),
                           validator: (String? value) {
-                            return ValidateCheckingFun.validatePassword(value);
+                            return ValidateCheckingFun.validateNumber(value);
                           },
                         ),
-
                         const SizedBox(
-                          height: 12,
+                          height: 10,
                         ),
 
-                        ///------Sign Up Button------///
+                        ///------Update button------///
                         ElevatedIconButton(
                           icon: Icons.arrow_circle_right_outlined,
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              _registerUser();
+                              oneButtonDialog(
+                                context,
+                                AppColor.themeColor,
+                                AppColor.themeColor,
+                                "Update Success!",
+                                "Your profile information update successfully.",
+                                Icons.task_alt,
+                                () {
+                                  Navigator.pop(context);
+                                },
+                              );
                             }
                           },
                         ),
-
-                        const SizedBox(
-                          height: 30,
-                        ),
-
-                        ///------Sign In Text------///
-                        Center(
-                          child: BottomRichText(
-                            text01: "Have account?",
-                            text02: "Sign In",
-                            onTap: () => Navigator.pop(context),
-                          ),
-                        )
                       ],
                     ),
                   ),
@@ -195,82 +198,5 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
       ),
     );
-  }
-
-  void _registerUser() async {
-    _registerInProgress = true;
-
-    loadingDialog(context);
-
-    if (mounted) {
-      setState(() {});
-    }
-
-    Map<String, dynamic> requestInput = {
-      "email": _emailTextEditingController.text.trim(),
-      "firstName": _firstNameTextEditingController.text.trim(),
-      "lastName": _lastNameTextEditingController.text.trim(),
-      "mobile": _mobileTextEditingController.text.trim(),
-      "password": _passwordTextEditingController.text,
-      "photo": ""
-    };
-
-    NetworkResponse response = await NetworkCaller.postResponse(
-      ApiUrl.registration,
-      body: requestInput,
-    );
-    _registerInProgress = false;
-    if (mounted) {
-      Navigator.pop(context);
-    }
-
-    if (response.isSuccess) {
-      _clearTextField();
-      if (mounted) {
-        oneButtonDialog(
-          context,
-          AppColor.themeColor,
-          AppColor.themeColor,
-          "Success!",
-          "Registration success. Now login!",
-          Icons.task_alt,
-          () {
-            OnTapAction.onTapRemoveUntil(context, AppRoute.loginScreen);
-          },
-        );
-      } else {
-        if (mounted) {
-          oneButtonDialog(
-            context,
-            AppColor.red,
-            AppColor.themeColor,
-            "Failed!",
-            "Registration failed, try again!",
-            Icons.task_alt,
-            () {
-              Navigator.pop(context);
-            },
-          );
-        }
-      }
-    }
-  }
-
-  void _clearTextField() {
-    _emailTextEditingController.clear();
-    _firstNameTextEditingController.clear();
-    _lastNameTextEditingController.clear();
-    _mobileTextEditingController.clear();
-    _passwordTextEditingController.clear();
-  }
-
-  @override
-  void dispose() {
-    _emailTextEditingController.dispose();
-    _firstNameTextEditingController.dispose();
-    _lastNameTextEditingController.dispose();
-    _mobileTextEditingController.dispose();
-    _passwordTextEditingController.dispose();
-    super.dispose();
   }
 }

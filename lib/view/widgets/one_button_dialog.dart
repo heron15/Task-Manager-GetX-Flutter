@@ -5,7 +5,8 @@ import 'elevated_text_button.dart';
 
 Future<dynamic> oneButtonDialog(
   BuildContext context,
-  Color themeColor,
+  Color iconColor,
+  Color buttonColor,
   String header,
   String subHeader,
   IconData icon,
@@ -13,6 +14,7 @@ Future<dynamic> oneButtonDialog(
 ) {
   return showDialog(
     context: context,
+    barrierDismissible: false,
     builder: (context) {
       return Dialog(
         shape: RoundedRectangleBorder(
@@ -27,7 +29,7 @@ Future<dynamic> oneButtonDialog(
             children: [
               Icon(
                 icon,
-                color: themeColor,
+                color: iconColor,
                 size: 60,
               ),
               const SizedBox(
@@ -35,8 +37,8 @@ Future<dynamic> oneButtonDialog(
               ),
               Text(
                 header,
-                style: const TextStyle(
-                  color: AppColor.themeColor,
+                style: TextStyle(
+                  color: iconColor,
                   fontWeight: FontWeight.w500,
                   fontSize: 20,
                 ),
@@ -46,6 +48,7 @@ Future<dynamic> oneButtonDialog(
               ),
               Text(
                 subHeader,
+                textAlign: TextAlign.center,
                 style: const TextStyle(
                   color: AppColor.black,
                   fontWeight: FontWeight.w400,
@@ -60,7 +63,7 @@ Future<dynamic> oneButtonDialog(
                 onPressed: onPressed,
                 width: 70,
                 borderRadius: 25,
-                backgroundColor: themeColor,
+                backgroundColor: buttonColor,
               ),
             ],
           ),

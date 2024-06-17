@@ -22,7 +22,7 @@ class CancelledTaskScreen extends StatelessWidget {
                 title: "Task title here",
                 subTitle: "Hello, here is sub title need to add.",
                 date: "22/08/2024",
-                labelText: "New",
+                labelText: "Cancelled",
                 labelBgColor: AppColor.cancelledLabelColor,
                 onTapEdit: () {},
                 onTapDelete: () {},

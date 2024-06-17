@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/model/network_response.dart';
+import 'package:task_manager/data/network_caller/network_caller.dart';
+import 'package:task_manager/utils/api_url.dart';
 import 'package:task_manager/utils/app_color.dart';
 import 'package:task_manager/view/utility/on_tap_action.dart';
 import 'package:task_manager/view/widgets/background_widget.dart';
 import 'package:task_manager/view/widgets/elevated_icon_button.dart';
 import 'package:task_manager/view/utility/validate_checking_fun.dart';
+import 'package:task_manager/view/widgets/loading_dialog.dart';
 
 import '../../../widgets/bottom_rich_text.dart';
+import '../../../widgets/one_button_dialog.dart';
 
 class ForgetScreen extends StatefulWidget {
   const ForgetScreen({super.key});
@@ -17,6 +22,8 @@ class ForgetScreen extends StatefulWidget {
 class _ForgetScreenState extends State<ForgetScreen> {
   final TextEditingController _emailTextEditingController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  bool _otpSendInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -77,9 +84,11 @@ class _ForgetScreenState extends State<ForgetScreen> {
 
                   ///------Button------///
                   ElevatedIconButton(
+                    icon: Icons.arrow_circle_right_outlined,
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        OnTapAction.onTapGoPinVerificationScreen(context);
+                        _sendOtp();
+                        //OnTapAction.onTapGoPinVerificationScreen(context);
                       }
                     },
                   ),
@@ -103,6 +112,61 @@ class _ForgetScreenState extends State<ForgetScreen> {
         ),
       ),
     );
+  }
+
+  void _sendOtp() async {
+    _otpSendInProgress = true;
+    loadingDialog(context);
+
+    String email = _emailTextEditingController.text.trim();
+
+    NetworkResponse response = await NetworkCaller.getResponse(
+      "${ApiUrl.recoverVerifyEmail}/$email",
+    );
+
+    _otpSendInProgress = false;
+    if (mounted) {
+      Navigator.pop(context);
+    }
+
+    if (response.responseData['status'] == 'success') {
+      _clearTextField();
+      if (mounted) {
+        OnTapAction.onTapGoPinVerificationScreen(context, email);
+      }
+    } else if (response.responseData['status'] == 'fail') {
+      if (mounted) {
+        oneButtonDialog(
+          context,
+          AppColor.red,
+          AppColor.themeColor,
+          "Failed!",
+          "This email is not registered!",
+          Icons.error_outline_rounded,
+          () {
+            Navigator.pop(context);
+          },
+        );
+      }
+    } else {
+      if (mounted) {
+        oneButtonDialog(
+          context,
+          AppColor.red,
+          AppColor.themeColor,
+          "Failed!",
+          "Something went wrong!",
+          Icons.task_alt,
+          () {
+            Navigator.pop(context);
+          },
+        );
+      }
+    }
+  }
+
+  void _clearTextField() {
+    _emailTextEditingController.clear();
   }
 
   @override

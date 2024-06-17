@@ -5,7 +5,7 @@ AppBarTheme getAppBarTheme() => const AppBarTheme(
       backgroundColor: AppColor.themeColor,
       foregroundColor: AppColor.white,
       titleTextStyle: TextStyle(
-        fontSize: 22,
+        fontSize: 18,
         fontWeight: FontWeight.w500
       ),
     );

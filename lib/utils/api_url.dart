@@ -9,7 +9,7 @@ class ApiUrl {
   static const listTaskByStatus = "$_baseUrl/listTaskByStatus/Completed";
   static const deleteTask = "$_baseUrl/deleteTask/id";
   static const taskStatusCount = "$_baseUrl/taskStatusCount";
-  static const recoverVerifyEmail = "$_baseUrl/RecoverVerifyEmail/rabbilidlc@gmail.com";
-  static const recoverVerifyOTP = "$_baseUrl/RecoverVerifyOTP/rabbilidlc@gmail.com/3344";
+  static const recoverVerifyEmail = "$_baseUrl/RecoverVerifyEmail";
+  static const recoverVerifyOTP = "$_baseUrl/RecoverVerifyOTP";
   static const recoverResetPass = "$_baseUrl/RecoverResetPass";
 }

@@ -1,16 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/model/network_response.dart';
+import 'package:task_manager/data/network_caller/network_caller.dart';
+import 'package:task_manager/utils/api_url.dart';
 import 'package:task_manager/view/widgets/background_widget.dart';
+import 'package:task_manager/view/widgets/custom_toast.dart';
+import 'package:task_manager/view/widgets/loading_dialog.dart';
+import 'package:task_manager/view/widgets/one_button_dialog.dart';
 
 import '../../../../utils/app_color.dart';
 import '../../../../utils/app_route.dart';
 import '../../../utility/on_tap_action.dart';
 import '../../../utility/validate_checking_fun.dart';
 import '../../../widgets/bottom_rich_text.dart';
-import '../../../widgets/custom_toast.dart';
 import '../../../widgets/elevated_text_button.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key});
+  const ResetPasswordScreen({
+    super.key,
+    required this.email,
+    required this.otp,
+  });
+
+  final String email;
+  final String otp;
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
@@ -20,6 +32,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final TextEditingController _passwordTextEditingController = TextEditingController();
   final TextEditingController _confirmPasswordTextEditingController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  bool _loadingInProgress = false;
 
   bool _obscureText01 = true;
   bool _obscureText02 = true;
@@ -136,7 +150,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                 AppColor.white,
                               ).show(context);
                             } else {
-                              OnTapAction.onTapRemoveUntil(context, AppRoute.loginScreen);
+                              _resetPassword();
                             }
                           }
                         },
@@ -163,5 +177,85 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         ),
       )),
     );
+  }
+
+  void _resetPassword() async {
+    _loadingInProgress = true;
+
+    loadingDialog(context);
+
+    Map<String, dynamic> requestInput = {
+      "email": widget.email,
+      "OTP": widget.otp,
+      "password": _confirmPasswordTextEditingController.text
+    };
+
+    String url = ApiUrl.recoverResetPass;
+    NetworkResponse response = await NetworkCaller.postResponse(url, body: requestInput);
+
+    _loadingInProgress = false;
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
+
+    if (response.responseData['status'] == 'success') {
+      _clearTextField();
+      if (mounted) {
+        oneButtonDialog(
+          context,
+          AppColor.themeColor,
+          AppColor.themeColor,
+          "Success!",
+          "Password reset success.",
+          Icons.task_alt,
+          () {
+            OnTapAction.onTapRemoveUntil(context, AppRoute.loginScreen);
+          },
+        );
+      }
+    } else if (response.responseData['status'] == 'fail') {
+      _clearTextField();
+      if (mounted) {
+        oneButtonDialog(
+          context,
+          AppColor.red,
+          AppColor.themeColor,
+          "Failed!",
+          "Email or otp not valid, try again.",
+          Icons.task_alt,
+          () {
+            Navigator.pop(context);
+          },
+        );
+      }
+    } else {
+      _clearTextField();
+      if (mounted) {
+        oneButtonDialog(
+          context,
+          AppColor.red,
+          AppColor.themeColor,
+          "Failed!",
+          "Something went wrong, try again.",
+          Icons.task_alt,
+              () {
+            Navigator.pop(context);
+          },
+        );
+      }
+    }
+  }
+
+  void _clearTextField() {
+    _passwordTextEditingController.clear();
+    _confirmPasswordTextEditingController.clear();
+  }
+
+  @override
+  void dispose() {
+    _passwordTextEditingController.dispose();
+    _confirmPasswordTextEditingController.dispose();
+    super.dispose();
   }
 }

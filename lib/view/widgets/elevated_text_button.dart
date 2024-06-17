@@ -4,10 +4,10 @@ import 'package:task_manager/utils/app_color.dart';
 class ElevatedTextButton extends StatelessWidget {
   const ElevatedTextButton({
     super.key,
-    this.text,
+    required this.text,
     this.onPressed,
-    this.width,
-    this.borderRadius,
+    this.width = double.infinity,
+    this.borderRadius = 8.0,
     this.backgroundColor,
   });
 

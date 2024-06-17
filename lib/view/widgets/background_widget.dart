@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
-
-import '../../utils/asset_paths.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:task_manager/utils/asset_paths.dart';
 
 class BackgroundWidget extends StatelessWidget {
   const BackgroundWidget({super.key, required this.child});
@@ -13,8 +12,8 @@ class BackgroundWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent, //status bar color change
-        statusBarIconBrightness: Brightness.dark, //status bar icon color change
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
       ),
     );
     return Stack(

@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import '../../utils/app_route.dart';
 
 class OnTapAction {
-
   //auth part
   static void onTapGoForgotPasswordScreen(BuildContext context) {
     Navigator.pushNamed(context, AppRoute.forgetScreen);
@@ -13,12 +12,19 @@ class OnTapAction {
     Navigator.pushNamed(context, AppRoute.signupScreen);
   }
 
-  static void onTapGoPinVerificationScreen(BuildContext context) {
-    Navigator.pushNamed(context, AppRoute.pinVerificationScreen);
+  static void onTapGoPinVerificationScreen(BuildContext context, String email) {
+    Navigator.pushNamed(context, AppRoute.pinVerificationScreen, arguments: email);
   }
 
-  static void onTapGoResetPasswordScreen(BuildContext context) {
-    Navigator.pushNamed(context, AppRoute.resetPasswordScreen);
+  static void onTapGoResetPasswordScreen(BuildContext context, String email, String otp) {
+    Navigator.pushNamed(
+      context,
+      AppRoute.resetPasswordScreen,
+      arguments: {
+        'email': email,
+        'otp': otp,
+      },
+    );
   }
 
   //main part
@@ -26,8 +32,8 @@ class OnTapAction {
     Navigator.pushReplacementNamed(context, AppRoute.mainBottomBar);
   }
 
-  static void onTapGoProfileScreen(BuildContext context) {
-    Navigator.pushNamed(context, AppRoute.profileScreen);
+  static void onTapGoUpdateProfileScreen(BuildContext context) {
+    Navigator.pushNamed(context, AppRoute.updateProfileScreen);
   }
 
   static void onTapGoAddNewTaskScreen(BuildContext context) {
@@ -41,5 +47,4 @@ class OnTapAction {
       (Route<dynamic> route) => false,
     );
   }
-
 }

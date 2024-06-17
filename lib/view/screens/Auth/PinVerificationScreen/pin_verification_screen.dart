@@ -1,22 +1,43 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/model/network_response.dart';
+import 'package:task_manager/data/network_caller/network_caller.dart';
+import 'package:task_manager/utils/api_url.dart';
+import 'package:task_manager/utils/app_color.dart';
 import 'package:task_manager/utils/app_route.dart';
 import 'package:task_manager/view/widgets/background_widget.dart';
+import 'package:task_manager/view/widgets/one_button_dialog.dart';
 
 import '../../../utility/on_tap_action.dart';
 import '../../../widgets/bottom_rich_text.dart';
 import '../../../widgets/elevated_text_button.dart';
+import '../../../widgets/loading_dialog.dart';
 import 'inner/custom_pin_code_text_field.dart';
 
 class PinVerificationScreen extends StatefulWidget {
-  const PinVerificationScreen({super.key});
+  const PinVerificationScreen({super.key, required this.email});
+
+  final String email;
 
   @override
   State<PinVerificationScreen> createState() => _PinVerificationScreenState();
 }
 
 class _PinVerificationScreenState extends State<PinVerificationScreen> {
-  final TextEditingController pinVerificationTextEditingController = TextEditingController();
+  final TextEditingController _pinVerificationTextEditingController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  bool _loadingInProgress = false;
+  late Timer _timer;
+  int _start = 60;
+  bool _isResendEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +80,38 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                     key: _formKey,
                     child: CustomPinCodeTextField(
                       context,
-                      pinVerificationTextEditingController,
+                      _pinVerificationTextEditingController,
                     ),
+                  ),
+
+                  const SizedBox(
+                    height: 16,
+                  ),
+
+                  ///------Resend otp section------///
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "$_start s",
+                        style: const TextStyle(
+                          color: AppColor.themeColor,
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: _isResendEnabled ? _resendOtp : null,
+                        child: Text(
+                          "Resend",
+                          style: TextStyle(
+                            color: _isResendEnabled ? AppColor.themeColor : Colors.grey,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
 
                   const SizedBox(
@@ -72,7 +123,8 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
                     text: "Verify",
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        OnTapAction.onTapGoResetPasswordScreen(context);
+                        _otpVerification();
+                        //OnTapAction.onTapGoResetPasswordScreen(context);
                       }
                     },
                   ),
@@ -98,9 +150,135 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
     );
   }
 
+  void _otpVerification() async {
+    _loadingInProgress = true;
+
+    String otp = _pinVerificationTextEditingController.text.trim();
+
+    loadingDialog(context);
+
+    String url = "${ApiUrl.recoverVerifyOTP}/${widget.email}/$otp";
+    NetworkResponse response = await NetworkCaller.getResponse(url);
+
+    _loadingInProgress = false;
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
+
+    if (response.responseData['status'] == 'success') {
+      _clearOtpField();
+      if (mounted) {
+        OnTapAction.onTapGoResetPasswordScreen(
+          context,
+          widget.email,
+          otp,
+        );
+      }
+    } else if (response.responseData['status'] == 'fail') {
+      _clearOtpField();
+      if (mounted) {
+        oneButtonDialog(
+          context,
+          AppColor.red,
+          AppColor.themeColor,
+          "Failed!",
+          "Please enter valid otp!",
+          Icons.error_outline_rounded,
+          () {
+            Navigator.pop(context);
+          },
+        );
+      }
+    } else {
+      _clearOtpField();
+      if (mounted) {
+        oneButtonDialog(
+          context,
+          AppColor.red,
+          AppColor.themeColor,
+          "Failed!",
+          "Something went wrong!",
+          Icons.error_outline_rounded,
+          () {
+            Navigator.pop(context);
+          },
+        );
+      }
+    }
+  }
+
+  void _resendOtp() async {
+    _loadingInProgress = true;
+
+    loadingDialog(context);
+
+    NetworkResponse response = await NetworkCaller.getResponse(
+      "${ApiUrl.recoverVerifyEmail}/${widget.email}",
+    );
+
+    _loadingInProgress = false;
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
+
+    if (response.responseData['status'] == 'success') {
+      if (mounted) {
+        oneButtonDialog(
+          context,
+          AppColor.themeColor,
+          AppColor.themeColor,
+          "Resend success!",
+          "Please check your email and collect otp.",
+          Icons.task_alt,
+              () {
+            Navigator.pop(context);
+          },
+        );
+      }
+    }else {
+      if (mounted) {
+        oneButtonDialog(
+          context,
+          AppColor.red,
+          AppColor.themeColor,
+          "Failed!",
+          "Otp send failed, Resend again!",
+          Icons.task_alt,
+              () {
+            Navigator.pop(context);
+          },
+        );
+      }
+    }
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _isResendEnabled = false;
+    _start = 60;
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_start == 0) {
+        setState(() {
+          _isResendEnabled = true;
+        });
+        _timer.cancel();
+      } else {
+        setState(() {
+          _start--;
+        });
+      }
+    });
+  }
+
+  void _clearOtpField() {
+    _pinVerificationTextEditingController.clear();
+  }
+
   @override
   void dispose() {
-    pinVerificationTextEditingController.dispose();
+    _pinVerificationTextEditingController.dispose();
     super.dispose();
   }
 }

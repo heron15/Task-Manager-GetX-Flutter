@@ -19,6 +19,7 @@ dependencies:
   cached_network_image: ^3.3.1
   image_picker:
   http:
+  shared_preferences: ^2.2.3
 
 #------------------------------
 

@@ -3,6 +3,7 @@ import 'package:task_manager/view/screens/AddNewTaskScreen/add_new_task_screen.d
 import 'package:task_manager/view/screens/Auth/PinVerificationScreen/pin_verification_screen.dart';
 import 'package:task_manager/view/screens/Auth/ResetPasswordScreen/reset_password_screen.dart';
 import 'package:task_manager/view/screens/MainBottomBar/main_bottom_bar.dart';
+import 'package:task_manager/view/screens/ProfileInfo/profile_info.dart';
 import 'package:task_manager/view/screens/SplashScreen/splash_screen.dart';
 import 'package:task_manager/view/screens/UpdateProfileScreen/update_profile_screen.dart';
 
@@ -23,6 +24,7 @@ class AppRoute {
 
   //main part
   static const String mainBottomBar = "/main_bottom_bar";
+  static const String profileInfo = "/profile_info";
   static const String updateProfileScreen = "/update_profile_screen";
   static const String addNewTaskScreen = "/add_new_task_screen";
 
@@ -66,6 +68,10 @@ class AppRoute {
 
       case updateProfileScreen:
         widget = const UpdateProfileScreen();
+        break;
+
+      case profileInfo:
+        widget = const ProfileInfo();
         break;
 
       case addNewTaskScreen:

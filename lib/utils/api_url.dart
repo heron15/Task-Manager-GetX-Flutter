@@ -2,7 +2,7 @@ class ApiUrl {
   static const _baseUrl = "https://task.teamrabbil.com/api/v1";
 
   static const registration = "$_baseUrl/registration";
-  static const login = "$_baseUrl/registration";
+  static const login = "$_baseUrl/login";
   static const profileUpdate = "$_baseUrl/profileUpdate";
   static const createTask = "$_baseUrl/createTask";
   static const updateTaskStatus = "$_baseUrl/updateTaskStatus/62b7582fac0007cc76c29b53/Progress";

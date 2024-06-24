@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:task_manager/utils/app_color.dart';
+import 'package:task_manager/view/controllers/auth_controller.dart';
 import 'package:task_manager/view/utility/validate_checking_fun.dart';
 import 'package:task_manager/view/widgets/background_widget.dart';
 import 'package:task_manager/view/widgets/elevated_icon_button.dart';
@@ -21,6 +22,15 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final TextEditingController _mobileTextEditingController = TextEditingController();
   final TextEditingController _passwordTextEditingController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _emailTextEditingController.text = AuthController.userData?.email ?? '';
+    _firstNameTextEditingController.text = AuthController.userData?.firstName ?? '';
+    _lastNameTextEditingController.text = AuthController.userData?.lastName ?? '';
+    _mobileTextEditingController.text = AuthController.userData?.mobile ?? '';
+  }
 
   bool _obscureText = true;
 
@@ -64,132 +74,136 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        ///------photo picker field------///
-                        photoPickerWidget(
-                          () => pickImage(),
-                          _selectedImage?.name,
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
+                  Column(
+                    children: [
+                      ///------photo picker field------///
+                      photoPickerWidget(
+                        () => pickImage(),
+                        _selectedImage?.name,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
 
-                        ///------email text form field------///
-                        TextFormField(
-                          controller: _emailTextEditingController,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          keyboardType: TextInputType.emailAddress,
-                          decoration: const InputDecoration(
-                            hintText: 'Email',
-                          ),
-                          validator: (String? value) {
-                            return ValidateCheckingFun.validateEmail(value);
-                          },
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-
-                        ///------First text form field------///
-                        TextFormField(
-                          controller: _firstNameTextEditingController,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          keyboardType: TextInputType.name,
-                          decoration: const InputDecoration(
-                            hintText: 'First Name',
-                          ),
-                          validator: (String? value) {
-                            return ValidateCheckingFun.validateFirstName(value);
-                          },
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-
-                        ///------Last name text form field------///
-                        TextFormField(
-                          controller: _lastNameTextEditingController,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          keyboardType: TextInputType.name,
-                          decoration: const InputDecoration(
-                            hintText: 'Last Name',
-                          ),
-                          validator: (String? value) {
-                            return ValidateCheckingFun.validateFirstName(value);
-                          },
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-
-                        ///------Mobile text form field------///
-                        TextFormField(
-                          controller: _mobileTextEditingController,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            hintText: 'Mobile',
-                          ),
-                          validator: (String? value) {
-                            return ValidateCheckingFun.validateNumber(value);
-                          },
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-
-                        ///------Password text form field------///
-                        TextFormField(
-                          controller: _passwordTextEditingController,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          keyboardType: TextInputType.visiblePassword,
-                          obscureText: _obscureText,
-                          decoration: InputDecoration(
-                            hintText: 'Password',
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _obscureText = !_obscureText;
-                                });
-                              },
-                              icon: Icon(
-                                _obscureText ? Icons.visibility : Icons.visibility_off,
-                                color: AppColor.grey,
+                      ///------email text form field------///
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              controller: _emailTextEditingController,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: const InputDecoration(
+                                hintText: 'Email',
                               ),
+                              validator: (String? value) {
+                                return ValidateCheckingFun.validateEmail(value);
+                              },
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+
+                            ///------First text form field------///
+                            TextFormField(
+                              controller: _firstNameTextEditingController,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              keyboardType: TextInputType.name,
+                              decoration: const InputDecoration(
+                                hintText: 'First Name',
+                              ),
+                              validator: (String? value) {
+                                return ValidateCheckingFun.validateFirstName(value);
+                              },
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+
+                            ///------Last name text form field------///
+                            TextFormField(
+                              controller: _lastNameTextEditingController,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              keyboardType: TextInputType.name,
+                              decoration: const InputDecoration(
+                                hintText: 'Last Name',
+                              ),
+                              validator: (String? value) {
+                                return ValidateCheckingFun.validateFirstName(value);
+                              },
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+
+                            ///------Mobile text form field------///
+                            TextFormField(
+                              controller: _mobileTextEditingController,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              keyboardType: TextInputType.number,
+                              decoration: const InputDecoration(
+                                hintText: 'Mobile',
+                              ),
+                              validator: (String? value) {
+                                return ValidateCheckingFun.validateNumber(value);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+
+                      ///------Password text form field------///
+                      TextFormField(
+                        controller: _passwordTextEditingController,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        keyboardType: TextInputType.visiblePassword,
+                        obscureText: _obscureText,
+                        decoration: InputDecoration(
+                          hintText: 'Password (Optional)',
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                            icon: Icon(
+                              _obscureText ? Icons.visibility : Icons.visibility_off,
+                              color: AppColor.grey,
                             ),
                           ),
-                          validator: (String? value) {
-                            return ValidateCheckingFun.validateNumber(value);
-                          },
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        validator: (String? value) {
+                          return ValidateCheckingFun.validatePassword(value);
+                        },
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
 
-                        ///------Update button------///
-                        ElevatedIconButton(
-                          icon: Icons.arrow_circle_right_outlined,
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              oneButtonDialog(
-                                context,
-                                AppColor.themeColor,
-                                AppColor.themeColor,
-                                "Update Success!",
-                                "Your profile information update successfully.",
-                                Icons.task_alt,
-                                () {
-                                  Navigator.pop(context);
-                                },
-                              );
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+                      ///------Update button------///
+                      ElevatedIconButton(
+                        icon: Icons.arrow_circle_right_outlined,
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            oneButtonDialog(
+                              context,
+                              AppColor.themeColor,
+                              AppColor.themeColor,
+                              "Update Success!",
+                              "Your profile information update successfully.",
+                              Icons.task_alt,
+                              () {
+                                Navigator.pop(context);
+                              },
+                            );
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),

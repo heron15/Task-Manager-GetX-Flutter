@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager/utils/app_color.dart';
+import 'package:task_manager/utils/asset_paths.dart';
 
 class NetworkCachedImage extends StatelessWidget {
   const NetworkCachedImage({
@@ -9,12 +10,14 @@ class NetworkCachedImage extends StatelessWidget {
     this.width,
     this.height,
     this.fit,
+    this.errorIconRadius,
   });
 
   final String url;
   final double? width;
   final double? height;
   final BoxFit? fit;
+  final double? errorIconRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +32,11 @@ class NetworkCachedImage extends StatelessWidget {
           ),
         );
       },
-      errorWidget: (_,__,___){
-        return const Icon(Icons.error_outline);
+      errorWidget: (_, __, ___) {
+        return CircleAvatar(
+          radius: errorIconRadius,
+          backgroundImage: const AssetImage(AssetPaths.profilePicture),
+        );
       },
     );
   }

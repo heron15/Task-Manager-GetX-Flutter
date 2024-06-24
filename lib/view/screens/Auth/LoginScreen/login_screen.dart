@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/model/login_model.dart';
+import 'package:task_manager/data/model/network_response.dart';
+import 'package:task_manager/data/network_caller/network_caller.dart';
+import 'package:task_manager/utils/api_url.dart';
 import 'package:task_manager/utils/app_color.dart';
+import 'package:task_manager/view/controllers/auth_controller.dart';
 import 'package:task_manager/view/utility/on_tap_action.dart';
 import 'package:task_manager/view/widgets/background_widget.dart';
 import 'package:task_manager/view/widgets/elevated_icon_button.dart';
 import 'package:task_manager/view/utility/validate_checking_fun.dart';
+import 'package:task_manager/view/widgets/loading_dialog.dart';
+import 'package:task_manager/view/widgets/one_button_dialog.dart';
 
 import '../../../widgets/bottom_rich_text.dart';
 
@@ -20,6 +27,9 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool _obscureText = true;
+
+  bool _signInProgress = false;
+  bool _isCheckValue = false;
 
   @override
   Widget build(BuildContext context) {
@@ -93,8 +103,27 @@ class _LoginScreenState extends State<LoginScreen> {
                           },
                         ),
 
-                        const SizedBox(
-                          height: 12,
+                        ///------Remember me section------///
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Checkbox(
+                              value: _isCheckValue,
+                              activeColor: AppColor.themeColor,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  _isCheckValue = value!;
+                                });
+                              },
+                            ),
+                            const Text(
+                              'Remember me?',
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
 
                         ///------Login Button------///
@@ -102,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           icon: Icons.arrow_circle_right_outlined,
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              OnTapAction.onTapGoMainBottomBar(context);
+                              signIn();
                             }
                           },
                         ),
@@ -146,6 +175,57 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> signIn() async {
+    _signInProgress = true;
+    if (mounted) {
+      setState(() {});
+    }
+
+    loadingDialog(context);
+
+    Map<String, dynamic> requestData = {
+      "email": _emailTextEditingController.text.trim(),
+      "password": _passwordTextEditingController.text,
+    };
+
+    final NetworkResponse response =
+        await NetworkCaller.postResponse(ApiUrl.login, body: requestData);
+
+    _signInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
+
+    if (response.isSuccess) {
+      LoginModel loginModel = LoginModel.fromJson(response.responseData);
+      await AuthController.saveUserAccessToken(loginModel.token!);
+      await AuthController.saveUserData(loginModel.userModel!);
+      await AuthController.saveRememberMeStatus(_isCheckValue);
+
+      if (mounted) {
+        OnTapAction.onTapGoMainBottomBar(context);
+      }
+    } else {
+      if (mounted) {
+        oneButtonDialog(
+          context,
+          AppColor.red,
+          AppColor.themeColor,
+          "Failed!",
+          "Login failed, enter correct information and try again!",
+          Icons.task_alt,
+          () {
+            Navigator.pop(context);
+          },
+        );
+      }
+    }
   }
 
   @override

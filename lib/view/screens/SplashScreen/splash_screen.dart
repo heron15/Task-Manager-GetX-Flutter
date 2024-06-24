@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:task_manager/utils/app_route.dart';
 import 'package:task_manager/utils/asset_paths.dart';
+import 'package:task_manager/view/controllers/auth_controller.dart';
 import 'package:task_manager/view/widgets/background_widget.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -14,8 +15,11 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   Future<void> _moveToNextScreen() async {
     await Future.delayed(const Duration(seconds: 2));
+
+    bool isUserLoggedIn = await AuthController.checkAuthState();
     if (mounted) {
-      Navigator.pushReplacementNamed(context, AppRoute.loginScreen);
+      Navigator.pushReplacementNamed(
+          context, isUserLoggedIn ? AppRoute.mainBottomBar : AppRoute.loginScreen);
     }
   }
 

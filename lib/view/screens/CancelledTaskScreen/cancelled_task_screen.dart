@@ -1,36 +1,88 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/model/network_response.dart';
+import 'package:task_manager/data/model/task_list_wrapper_model.dart';
+import 'package:task_manager/data/model/task_model.dart';
+import 'package:task_manager/data/network_caller/network_caller.dart';
+import 'package:task_manager/utils/api_url.dart';
+import 'package:task_manager/view/widgets/center_progress_indicator.dart';
+import 'package:task_manager/view/widgets/custom_toast.dart';
 import 'package:task_manager/view/widgets/profile_app_bar.dart';
 
 import '../../../utils/app_color.dart';
 import '../../widgets/task_list_item.dart';
 
-class CancelledTaskScreen extends StatelessWidget {
+class CancelledTaskScreen extends StatefulWidget {
   const CancelledTaskScreen({super.key});
+
+  @override
+  State<CancelledTaskScreen> createState() => _CancelledTaskScreenState();
+}
+
+class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
+  bool _cancelledTaskInProgress = false;
+  List<TaskModel> cancelledTaskList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getCancelledTask();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: profileAppBar(context),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Expanded(
-          child: ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            itemCount: 7,
-            itemBuilder: (context, index) {
-              return TaskListItem(
-                title: "Task title here",
-                subTitle: "Hello, here is sub title need to add.",
-                date: "22/08/2024",
-                labelText: "Cancelled",
-                labelBgColor: AppColor.cancelledLabelColor,
-                onTapEdit: () {},
-                onTapDelete: () {},
-              );
-            },
-          ),
-        ),
-      ),
+      body: _cancelledTaskInProgress
+          ? const CenterProgressIndicator()
+          : RefreshIndicator(
+              color: AppColor.themeColor,
+              onRefresh: () async {
+                _getCancelledTask();
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Expanded(
+                  child: ListView.builder(
+                    itemCount: cancelledTaskList.length,
+                    itemBuilder: (context, index) {
+                      return TaskListItem(
+                        taskModel: cancelledTaskList[index],
+                        labelBgColor: AppColor.cancelledLabelColor,
+                        onTapEdit: () {},
+                        onTapDelete: () {},
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
     );
+  }
+
+  Future<void> _getCancelledTask() async {
+    setState(() {
+      _cancelledTaskInProgress = true;
+    });
+
+    NetworkResponse response = await NetworkCaller.getResponse(ApiUrl.canceledTask);
+
+    if (response.isSuccess) {
+      TaskListWrapperModel taskListWrapperModel =
+          TaskListWrapperModel.fromJson(response.responseData);
+      cancelledTaskList = taskListWrapperModel.taskList ?? [];
+    } else {
+      setCustomToast(
+        response.errorMessage ?? "Get cancelled task failed!",
+        Icons.error_outline,
+        AppColor.red,
+        AppColor.white,
+      );
+    }
+
+    _cancelledTaskInProgress = false;
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 }

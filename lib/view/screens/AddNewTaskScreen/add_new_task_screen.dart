@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/model/network_response.dart';
+import 'package:task_manager/data/network_caller/network_caller.dart';
+import 'package:task_manager/utils/api_url.dart';
+import 'package:task_manager/utils/app_color.dart';
 import 'package:task_manager/view/widgets/background_widget.dart';
+import 'package:task_manager/view/widgets/custom_toast.dart';
 import 'package:task_manager/view/widgets/elevated_icon_button.dart';
+import 'package:task_manager/view/widgets/loading_dialog.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
   const AddNewTaskScreen({super.key});
@@ -13,6 +19,8 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   final TextEditingController _subjectTextEditingController = TextEditingController();
   final TextEditingController _descriptionTextEditingController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  bool _addNewTaskInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +99,9 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                   ElevatedIconButton(
                     icon: Icons.arrow_circle_right_outlined,
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {}
+                      if (_formKey.currentState!.validate()) {
+                        _addNewTask();
+                      }
                     },
                   ),
                 ],
@@ -101,5 +111,69 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _addNewTask() async {
+
+    _addNewTaskInProgress = true;
+
+    if (mounted) {
+      setState(() {});
+    }
+
+    loadingDialog(context);
+
+    Map<String, dynamic> requestData = {
+      "title": _subjectTextEditingController.text.trim(),
+      "description": _descriptionTextEditingController.text.trim(),
+      "status": "New",
+    };
+
+    NetworkResponse response =
+        await NetworkCaller.postResponse(ApiUrl.createTask, body: requestData);
+
+    _addNewTaskInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
+
+    if (response.isSuccess) {
+      _clearTextField();
+      if (mounted) {
+        setCustomToast(
+          "New task added!",
+          Icons.done,
+          AppColor.themeColor,
+          AppColor.white,
+        ).show(context);
+        Navigator.pop(context);
+      }
+    } else {
+      _clearTextField();
+      if (mounted) {
+        setCustomToast(
+          "New task add failed!",
+          Icons.error_outline,
+          AppColor.red,
+          AppColor.white,
+        ).show(context);
+      }
+    }
+  }
+
+  void _clearTextField() {
+    _subjectTextEditingController.clear();
+    _descriptionTextEditingController.clear();
+  }
+
+  @override
+  void dispose() {
+    _subjectTextEditingController.dispose();
+    _descriptionTextEditingController.dispose();
+    super.dispose();
   }
 }

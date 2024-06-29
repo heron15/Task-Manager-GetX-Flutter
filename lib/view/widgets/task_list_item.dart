@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/model/task_model.dart';
 
 import '../../utils/app_color.dart';
 
 class TaskListItem extends StatelessWidget {
   const TaskListItem({
     super.key,
-    required this.title,
-    required this.subTitle,
-    required this.date,
-    required this.labelText,
+    required this.taskModel,
     required this.labelBgColor,
     required this.onTapEdit,
     required this.onTapDelete,
   });
 
-  final String title;
-  final String subTitle;
-  final String date;
-  final String labelText;
+  final TaskModel taskModel;
   final Color labelBgColor;
-  final VoidCallback onTapEdit;
-  final VoidCallback onTapDelete;
+  final VoidCallback? onTapEdit;
+  final VoidCallback? onTapDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +27,7 @@ class TaskListItem extends StatelessWidget {
       ),
       child: ListTile(
         title: Text(
-          title,
+          taskModel.title ?? '',
           style: const TextStyle(
             color: AppColor.black,
             fontWeight: FontWeight.w600,
@@ -43,7 +38,7 @@ class TaskListItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              subTitle,
+              taskModel.description ?? '',
               style: const TextStyle(
                 color: AppColor.black,
                 fontWeight: FontWeight.w400,
@@ -51,7 +46,7 @@ class TaskListItem extends StatelessWidget {
               ),
             ),
             Text(
-              "Date: $date",
+              "Date: ${taskModel.createdDate}",
               style: const TextStyle(
                 color: AppColor.black,
                 fontWeight: FontWeight.w500,
@@ -68,7 +63,7 @@ class TaskListItem extends StatelessWidget {
                     borderRadius: BorderRadius.circular(25),
                   ),
                   child: Text(
-                    labelText,
+                    taskModel.status ?? '',
                     style: const TextStyle(
                       color: AppColor.white,
                       fontSize: 12,

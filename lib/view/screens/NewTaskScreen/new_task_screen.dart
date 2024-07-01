@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/data/model/network_response.dart';
+import 'package:task_manager/data/model/task_count_by_status_model.dart';
+import 'package:task_manager/data/model/task_count_by_status_wrapper_model.dart';
 import 'package:task_manager/data/model/task_list_wrapper_model.dart';
 import 'package:task_manager/data/model/task_model.dart';
 import 'package:task_manager/data/network_caller/network_caller.dart';
@@ -21,12 +23,16 @@ class NewTaskScreen extends StatefulWidget {
 
 class _NewTaskScreenState extends State<NewTaskScreen> {
   bool _newTaskInProgress = false;
+  bool _taskCountByStatusInProgress = false;
+
   List<TaskModel> newTaskList = [];
+  List<TaskCountByStatusModel> taskCountByStatusList = [];
 
   @override
   void initState() {
     super.initState();
     _getNewTask();
+    _getTaskCountByStatus();
   }
 
   @override
@@ -37,15 +43,15 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
         color: AppColor.themeColor,
         onRefresh: () async {
           _getNewTask();
+          _getTaskCountByStatus();
         },
         child: Visibility(
-          visible: _newTaskInProgress == false,
+          visible: _newTaskInProgress == false && _taskCountByStatusInProgress == false,
           replacement: const CenterProgressIndicator(),
           child: ListView(
             padding: const EdgeInsets.all(10),
-            physics: const BouncingScrollPhysics(),
             children: [
-              buildSummarySection(),
+              buildSummarySection(taskCountByStatusList),
               const SizedBox(
                 height: 10,
               ),
@@ -54,10 +60,15 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                   return TaskListItem(
                     taskModel: task,
                     labelBgColor: AppColor.newTaskLabelColor,
-                    onTapEdit: () {},
-                    onTapDelete: () {},
+                    onUpdateTask: () {
+                      _getNewTask();
+                      _getTaskCountByStatus();
+                    },
                   );
                 },
+              ),
+              const SizedBox(
+                height: 90,
               ),
             ],
           ),
@@ -106,6 +117,35 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     }
 
     _newTaskInProgress = false;
+
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> _getTaskCountByStatus() async {
+    _taskCountByStatusInProgress = true;
+
+    if (mounted) {
+      setState(() {});
+    }
+
+    NetworkResponse response = await NetworkCaller.getResponse(ApiUrl.taskStatusCount);
+
+    if (response.isSuccess) {
+      TaskCountByStatusWrapperModel taskCountByStatusWrapperModel =
+          TaskCountByStatusWrapperModel.fromJson(response.responseData);
+      taskCountByStatusList = taskCountByStatusWrapperModel.taskCountByStatusList ?? [];
+    } else {
+      setCustomToast(
+        response.errorMessage ?? "Get task count by status failed!",
+        Icons.error_outline,
+        AppColor.red,
+        AppColor.white,
+      );
+    }
+
+    _taskCountByStatusInProgress = false;
 
     if (mounted) {
       setState(() {});

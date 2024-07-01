@@ -48,8 +48,9 @@ class _CancelledTaskScreenState extends State<CancelledTaskScreen> {
                       return TaskListItem(
                         taskModel: cancelledTaskList[index],
                         labelBgColor: AppColor.cancelledLabelColor,
-                        onTapEdit: () {},
-                        onTapDelete: () {},
+                        onUpdateTask: () {
+                          _getCancelledTask();
+                        },
                       );
                     },
                   ),

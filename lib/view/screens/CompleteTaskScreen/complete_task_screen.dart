@@ -49,8 +49,9 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
                   return TaskListItem(
                     taskModel: completeTaskList[index],
                     labelBgColor: AppColor.completeLabelColor,
-                    onTapEdit: () {},
-                    onTapDelete: () {},
+                    onUpdateTask: () {
+                      _getCompleteTask();
+                    },
                   );
                 },
               ),

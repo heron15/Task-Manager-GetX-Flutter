@@ -1,10 +1,19 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:task_manager/data/model/network_response.dart';
+import 'package:task_manager/data/model/user_model.dart';
+import 'package:task_manager/data/network_caller/network_caller.dart';
+import 'package:task_manager/utils/api_url.dart';
 import 'package:task_manager/utils/app_color.dart';
 import 'package:task_manager/view/controllers/auth_controller.dart';
 import 'package:task_manager/view/utility/validate_checking_fun.dart';
 import 'package:task_manager/view/widgets/background_widget.dart';
+import 'package:task_manager/view/widgets/custom_toast.dart';
 import 'package:task_manager/view/widgets/elevated_icon_button.dart';
+import 'package:task_manager/view/widgets/loading_dialog.dart';
 import 'package:task_manager/view/widgets/one_button_dialog.dart';
 import 'inner/photo_picker_widget.dart';
 
@@ -26,26 +35,18 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _emailTextEditingController.text = AuthController.userData?.email ?? '';
-    _firstNameTextEditingController.text = AuthController.userData?.firstName ?? '';
-    _lastNameTextEditingController.text = AuthController.userData?.lastName ?? '';
-    _mobileTextEditingController.text = AuthController.userData?.mobile ?? '';
+    final userData = AuthController.userData!;
+    _emailTextEditingController.text = userData.email ?? '';
+    _firstNameTextEditingController.text = userData.firstName ?? '';
+    _lastNameTextEditingController.text = userData.lastName ?? '';
+    _mobileTextEditingController.text = userData.mobile ?? '';
   }
 
   bool _obscureText = true;
+  bool _updateProfileInProgress = false;
 
   final ImagePicker _imagePicker = ImagePicker();
   XFile? _selectedImage;
-
-  Future<void> pickImage() async {
-    final XFile? pickedFile = await _imagePicker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        _selectedImage = pickedFile;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +95,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                               controller: _emailTextEditingController,
                               autovalidateMode: AutovalidateMode.onUserInteraction,
                               keyboardType: TextInputType.emailAddress,
+                              enabled: false,
                               decoration: const InputDecoration(
                                 hintText: 'Email',
                               ),
@@ -189,17 +191,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         icon: Icons.arrow_circle_right_outlined,
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            oneButtonDialog(
-                              context,
-                              AppColor.themeColor,
-                              AppColor.themeColor,
-                              "Update Success!",
-                              "Your profile information update successfully.",
-                              Icons.task_alt,
-                              () {
-                                Navigator.pop(context);
-                              },
-                            );
+                            _updateProfile();
                           }
                         },
                       ),
@@ -212,5 +204,90 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _updateProfile() async {
+    _updateProfileInProgress = true;
+
+    String encodePhoto = AuthController.userData?.photo ?? '';
+
+    if (mounted) {
+      setState(() {});
+    }
+
+    loadingDialog(context);
+
+    Map<String, dynamic> requestBody = {
+      "email": _emailTextEditingController.text.trim(),
+      "firstName": _firstNameTextEditingController.text.trim(),
+      "lastName": _lastNameTextEditingController.text.trim(),
+      "mobile": _mobileTextEditingController.text.trim(),
+    };
+
+    if (_passwordTextEditingController.text.isNotEmpty) {
+      requestBody["password"] = _passwordTextEditingController.text;
+    }
+
+    if (_selectedImage != null) {
+      File file = File(_selectedImage!.path);
+      encodePhoto = base64Encode(file.readAsBytesSync());
+      requestBody["photo"] = encodePhoto;
+    }
+
+    final NetworkResponse response =
+        await NetworkCaller.postResponse(ApiUrl.profileUpdate, body: requestBody);
+
+    _updateProfileInProgress = false;
+
+    if (mounted) {
+      setState(() {});
+    }
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
+
+    if (response.isSuccess && response.responseData['status'] == 'success') {
+      UserModel userModel = UserModel(
+        email: _emailTextEditingController.text.trim(),
+        photo: encodePhoto,
+        firstName: _firstNameTextEditingController.text.trim(),
+        lastName: _lastNameTextEditingController.text.trim(),
+        mobile: _mobileTextEditingController.text.trim(),
+      );
+      await AuthController.saveUserData(userModel);
+      if (mounted) {
+        oneButtonDialog(
+          context,
+          AppColor.themeColor,
+          AppColor.themeColor,
+          "Update Success!",
+          "Your profile information update successfully.",
+          Icons.task_alt,
+          () {
+            Navigator.pop(context);
+          },
+        );
+      }
+    } else {
+      if (mounted) {
+        setCustomToast(
+          response.errorMessage ?? "Update failed!",
+          Icons.error_outline,
+          AppColor.red,
+          AppColor.white,
+        );
+      }
+    }
+  }
+
+  Future<void> pickImage() async {
+    final XFile? pickedFile = await _imagePicker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = pickedFile;
+      });
+    }
   }
 }

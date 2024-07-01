@@ -20,6 +20,7 @@ dependencies:
   image_picker:
   http:
   shared_preferences: ^2.2.3
+  rename_app: ^1.6.1
 
 #------------------------------
 

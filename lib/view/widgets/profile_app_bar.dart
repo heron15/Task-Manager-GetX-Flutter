@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:task_manager/utils/app_route.dart';
 import 'package:task_manager/view/controllers/auth_controller.dart';
 import 'package:task_manager/view/utility/on_tap_action.dart';
+import 'package:task_manager/view/widgets/custom_circle_avatar.dart';
 
 import '../../utils/app_color.dart';
-import 'network_cached_image.dart';
 
 AppBar profileAppBar(BuildContext context) {
   return AppBar(
@@ -14,11 +14,11 @@ AppBar profileAppBar(BuildContext context) {
         onTap: () {
           Navigator.pushNamed(context, AppRoute.profileInfo);
         },
-        child: const CircleAvatar(
-          backgroundColor: AppColor.white,
-          child: NetworkCachedImage(
-            url: '',
-          ),
+        child: CustomCircleAvatar(
+          imageString: AuthController.userData?.photo ?? '',
+          imageWidth: 40,
+          imageHeight: 40,
+          imageRadius: 50,
         ),
       ),
     ),

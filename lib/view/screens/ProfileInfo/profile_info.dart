@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/utils/app_color.dart';
 import 'package:task_manager/utils/app_route.dart';
-import 'package:task_manager/utils/asset_paths.dart';
 import 'package:task_manager/view/controllers/auth_controller.dart';
 import 'package:task_manager/view/screens/ProfileInfo/inner/details_view_widget.dart';
 import 'package:task_manager/view/widgets/background_widget.dart';
-import 'package:task_manager/view/widgets/network_cached_image.dart';
+import 'package:task_manager/view/widgets/custom_circle_avatar.dart';
 
 class ProfileInfo extends StatefulWidget {
   const ProfileInfo({super.key});
@@ -43,11 +41,13 @@ class _ProfileInfoState extends State<ProfileInfo> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Align(
+                  Align(
                     alignment: Alignment.center,
-                    child: NetworkCachedImage(
-                      url: 'url',
-                      errorIconRadius: 50,
+                    child: CustomCircleAvatar(
+                      imageString: AuthController.userData?.photo ?? '',
+                      imageWidth: 100,
+                      imageHeight: 100,
+                      imageRadius: 50,
                     ),
                   ),
                   const SizedBox(height: 10),

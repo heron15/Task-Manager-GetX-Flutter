@@ -5,8 +5,11 @@ class ApiUrl {
   static const login = "$_baseUrl/login";
   static const profileUpdate = "$_baseUrl/profileUpdate";
   static const createTask = "$_baseUrl/createTask";
-  static const updateTaskStatus = "$_baseUrl/updateTaskStatus/62b7582fac0007cc76c29b53/Progress";
-  static const deleteTask = "$_baseUrl/deleteTask/id";
+
+  static updateTaskStatus(String id, String status) => "$_baseUrl/updateTaskStatus/$id/$status";
+
+  static String deleteTask(String id) => "$_baseUrl/deleteTask/$id";
+
   static const taskStatusCount = "$_baseUrl/taskStatusCount";
   static const recoverVerifyEmail = "$_baseUrl/RecoverVerifyEmail";
   static const recoverVerifyOTP = "$_baseUrl/RecoverVerifyOTP";

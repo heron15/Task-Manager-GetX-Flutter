@@ -48,8 +48,9 @@ class _InProgressTaskScreenState extends State<InProgressTaskScreen> {
                       return TaskListItem(
                         taskModel: progressTaskList[index],
                         labelBgColor: AppColor.progressLabelColor,
-                        onTapEdit: () {},
-                        onTapDelete: () {},
+                        onUpdateTask: () {
+                          _getProgressTask();
+                        },
                       );
                     },
                   ),

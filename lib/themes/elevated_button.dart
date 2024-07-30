@@ -6,10 +6,10 @@ ElevatedButtonThemeData getElevatedButtonThemeData() => ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColor.themeColor,
         foregroundColor: AppColor.white,
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 13),
         fixedSize: const Size.fromWidth(double.maxFinite),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(25),
         ),
       ),
     );

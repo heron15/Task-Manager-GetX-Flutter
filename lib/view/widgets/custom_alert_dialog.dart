@@ -15,7 +15,14 @@ Future<dynamic> customAlertDialog(
           borderRadius: BorderRadius.circular(15),
         ),
         backgroundColor: AppColor.white,
-        title: Text(title),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 18,
+            color: AppColor.textColorPrimary,
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () {

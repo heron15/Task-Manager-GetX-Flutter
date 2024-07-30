@@ -11,12 +11,14 @@ class CustomCircleAvatar extends StatefulWidget {
     this.imageWidth,
     this.imageHeight,
     this.imageRadius,
+    required this.borderColor,
   });
 
   final String imageString;
   final double? imageWidth;
   final double? imageHeight;
   final double? imageRadius;
+  final Color borderColor;
 
   @override
   State<CustomCircleAvatar> createState() => _CustomCircleAvatarState();
@@ -50,26 +52,36 @@ class _CustomCircleAvatarState extends State<CustomCircleAvatar> {
   }
 
   @override
+  void didUpdateWidget(covariant CustomCircleAvatar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.imageString != oldWidget.imageString) {
+      _loadImage();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CircleAvatar(
-      backgroundImage: const AssetImage(AssetPaths.errorPicture),
+      backgroundImage: const AssetImage(AssetPaths.profilePicture),
       radius: widget.imageRadius,
       child: isLoading
           ? const CircularProgressIndicator(
               color: AppColor.themeColor,
             )
-          : ClipOval(
-              child: Image.memory(
-                imageBytes!,
-                fit: BoxFit.cover,
-                width: widget.imageWidth,
-                height: widget.imageHeight,
-                errorBuilder: (_, __, ___) {
-                  return CircleAvatar(
-                    radius: widget.imageRadius,
-                    backgroundImage: const AssetImage(AssetPaths.profilePicture),
-                  );
-                },
+          : Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                border: Border.all(
+                  width: 2,
+                  color: widget.borderColor,
+                ),
+                image: DecorationImage(
+                  image: MemoryImage(imageBytes!),
+                  fit: BoxFit.cover,
+                  onError: (_, __) {
+                    const AssetImage(AssetPaths.errorPicture);
+                  },
+                ),
               ),
             ),
     );

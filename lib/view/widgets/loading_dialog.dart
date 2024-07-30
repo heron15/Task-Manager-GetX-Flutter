@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/utils/app_color.dart';
 
-Future<dynamic> loadingDialog(BuildContext context) {
+Future<void> loadingDialog(BuildContext context) async{
   return showDialog(
     context: context,
     barrierDismissible: false,

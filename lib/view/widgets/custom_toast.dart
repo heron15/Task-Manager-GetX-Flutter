@@ -1,7 +1,6 @@
 import 'package:delightful_toast/delight_toast.dart';
 import 'package:delightful_toast/toast/utils/enums.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager/utils/app_color.dart';
 
 DelightToastBar setCustomToast(
   String? message,

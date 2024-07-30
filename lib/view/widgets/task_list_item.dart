@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/app.dart';
 import 'package:task_manager/data/model/network_response.dart';
 import 'package:task_manager/data/model/task_model.dart';
 import 'package:task_manager/data/network_caller/network_caller.dart';
 import 'package:task_manager/utils/api_url.dart';
-import 'package:task_manager/view/controllers/auth_controller.dart';
+import 'package:task_manager/utils/app_color.dart';
 import 'package:task_manager/view/widgets/custom_alert_dialog.dart';
 import 'package:task_manager/view/widgets/custom_toast.dart';
 import 'package:task_manager/view/widgets/loading_dialog.dart';
-
-import '../../utils/app_color.dart';
 
 class TaskListItem extends StatefulWidget {
   const TaskListItem({
@@ -48,11 +45,20 @@ class _TaskListItemState extends State<TaskListItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: AppColor.white,
-      elevation: 1,
-      shape: RoundedRectangleBorder(
+    return Container(
+      margin: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: AppColor.white,
         borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.5),
+            spreadRadius: -4,
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+            blurStyle: BlurStyle.normal,
+          ),
+        ],
       ),
       child: ListTile(
         title: Text(
@@ -86,7 +92,7 @@ class _TaskListItemState extends State<TaskListItem> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
                   decoration: BoxDecoration(
                     color: widget.labelBgColor,
                     borderRadius: BorderRadius.circular(25),
@@ -107,6 +113,7 @@ class _TaskListItemState extends State<TaskListItem> {
                       color: AppColor.white,
                       icon: const Icon(
                         Icons.edit,
+                        color: AppColor.textColorSecondary,
                       ),
                       onSelected: (String selectedValue) {
                         dropDownValue = selectedValue;
@@ -149,6 +156,7 @@ class _TaskListItemState extends State<TaskListItem> {
                       },
                       icon: const Icon(
                         Icons.delete,
+                        color: AppColor.textColorSecondary,
                       ),
                     ),
                   ],

@@ -5,9 +5,9 @@ class ElevatedTextButton extends StatelessWidget {
   const ElevatedTextButton({
     super.key,
     required this.text,
-    this.onPressed,
+    required this.onPressed,
     this.width = double.infinity,
-    this.borderRadius = 8.0,
+    this.borderRadius = 25.0,
     this.backgroundColor,
   });
 

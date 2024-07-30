@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:task_manager/app.dart';
 import 'package:task_manager/data/model/network_response.dart';
 import 'package:http/http.dart';
-import 'package:task_manager/utils/app_route.dart';
-import 'package:task_manager/view/controllers/auth_controller.dart';
-import 'package:task_manager/view/screens/Auth/LoginScreen/login_screen.dart';
-import 'package:task_manager/view/utility/on_tap_action.dart';
+import 'package:task_manager/core/app_route.dart';
+import 'package:task_manager/controllers/auth_shared_preferences_controller.dart';
 
 class NetworkCaller {
   static Future<NetworkResponse> getResponse(String url) async {
@@ -15,7 +13,7 @@ class NetworkCaller {
       Response response = await get(
         Uri.parse(url),
         headers: {
-          'token': AuthController.accessToken,
+          'token': AuthSharedPreferencesController.accessToken,
         },
       );
 
@@ -54,7 +52,7 @@ class NetworkCaller {
         body: jsonEncode(body),
         headers: {
           'Content-type': 'Application/json',
-          'token': AuthController.accessToken,
+          'token': AuthSharedPreferencesController.accessToken,
         },
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -86,7 +84,8 @@ class NetworkCaller {
   }
 
   static Future<void> redirectToLogin() async {
-    await AuthController.clearAllData();
-    OnTapAction.onTapRemoveUntil(TaskManager.navigatorKey.currentContext!, AppRoute.loginScreen);
+    await AuthSharedPreferencesController.clearAllData();
+    Navigator.pushNamedAndRemoveUntil(TaskManager.navigatorKey.currentContext!,
+        AppRoute.loginScreen, (Route<dynamic> route) => false);
   }
 }

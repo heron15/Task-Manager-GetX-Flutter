@@ -1,42 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/app.dart';
 import 'package:task_manager/utils/app_color.dart';
+import 'package:task_manager/view/widgets/center_progress_indicator.dart';
 
-Future<void> loadingDialog(BuildContext context) async{
+Future<void> loadingDialog() async {
   return showDialog(
-    context: context,
+    context: TaskManager.navigatorKey.currentContext!,
     barrierDismissible: false,
     builder: (BuildContext context) {
       return Center(
         child: Container(
           height: 70,
-          width: 200,
+          width: 70,
           padding: const EdgeInsets.symmetric(horizontal: 20),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(25),
             color: AppColor.white,
           ),
-          child: const Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(
-                color: AppColor.themeColor,
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              Material(
-                color: Colors.transparent,
-                child: Text(
-                  "Loading",
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: AppColor.themeColor,
-                  ),
-                ),
-              ),
-            ],
+          child: const CenterProgressIndicator(
+            indicatorSize: 30,
           ),
         ),
       );

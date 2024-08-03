@@ -6,6 +6,7 @@ import 'package:task_manager/themes/app_bar.dart';
 import 'package:task_manager/themes/elevated_button.dart';
 import 'package:task_manager/themes/text_theme.dart';
 import 'package:task_manager/core/app_route.dart';
+import 'package:task_manager/utils/app_color.dart';
 
 class TaskManager extends StatefulWidget {
   const TaskManager({super.key});
@@ -32,6 +33,7 @@ class _TaskManagerState extends State<TaskManager> {
       getPages: AppRoute.route,
       initialBinding: DependencyInjection(),
       theme: ThemeData(
+        primaryColor: AppColor.themeColor,
         elevatedButtonTheme: getElevatedButtonThemeData(),
         textTheme: getTextTheme(),
         appBarTheme: getAppBarTheme(),

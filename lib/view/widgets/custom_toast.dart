@@ -2,7 +2,7 @@ import 'package:delightful_toast/delight_toast.dart';
 import 'package:delightful_toast/toast/utils/enums.dart';
 import 'package:flutter/material.dart';
 
-DelightToastBar setCustomToast(
+DelightToastBar showCustomToast(
   String? message,
   IconData? icon,
   Color? backgroundColor,
@@ -11,7 +11,9 @@ DelightToastBar setCustomToast(
   return DelightToastBar(
     position: DelightSnackbarPosition.top,
     autoDismiss: true,
-    snackbarDuration: Durations.extralong4,
+    snackbarDuration: const Duration(milliseconds: 2500),
+    animationCurve: Curves.easeInOut,
+    animationDuration: const Duration(milliseconds: 300),
     builder: (context) {
       return Padding(
         padding: const EdgeInsets.only(left: 50, right: 50),

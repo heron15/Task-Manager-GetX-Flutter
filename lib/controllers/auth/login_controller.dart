@@ -7,7 +7,7 @@ import 'package:task_manager/utils/api_url.dart';
 import 'package:task_manager/utils/app_strings.dart';
 
 class LoginController extends GetxController {
-  String _errorMessage = '';
+  String _errorMessage = "";
 
   String get errorMessage => _errorMessage;
 
@@ -24,7 +24,7 @@ class LoginController extends GetxController {
       body: requestData,
     );
 
-    if (response.isSuccess) {
+    if (response.responseData != null && response.responseData['status'] == 'success') {
       LoginModel loginModel = LoginModel.fromJson(response.responseData);
       await AuthSharedPreferencesController.saveUserAccessToken(loginModel.token!);
       await AuthSharedPreferencesController.saveUserData(loginModel.userModel!);

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/controllers/add_new_task_controller.dart';
 import 'package:task_manager/core/app_route.dart';
-import 'package:task_manager/data/model/network_response.dart';
-import 'package:task_manager/data/network_caller/network_caller.dart';
-import 'package:task_manager/utils/api_url.dart';
 import 'package:task_manager/utils/app_color.dart';
 import 'package:task_manager/view/widgets/custom_text_form_field.dart';
 import 'package:task_manager/view/widgets/custom_toast.dart';
 import 'package:task_manager/view/widgets/elevated_icon_button.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/view/widgets/loading_dialog.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
@@ -20,8 +19,6 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   final TextEditingController _subjectTextEditingController = TextEditingController();
   final TextEditingController _descriptionTextEditingController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  bool _addNewTaskInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -87,12 +84,16 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                     ],
                   ),
                 ),
-                ElevatedIconButton(
-                  icon: Icons.arrow_circle_right_outlined,
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      _addNewTask();
-                    }
+                GetBuilder<AddNewTaskController>(
+                  builder: (addNewTaskController) {
+                    return ElevatedIconButton(
+                      icon: Icons.arrow_circle_right_outlined,
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _addNewTask(addNewTaskController);
+                        }
+                      },
+                    );
                   },
                 ),
               ],
@@ -103,48 +104,35 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
     );
   }
 
-  Future<void> _addNewTask() async {
-    _addNewTaskInProgress = true;
+  void _addNewTask(AddNewTaskController addNewTaskController) async {
+    loadingDialog();
 
-    if (mounted) {
-      setState(() {});
-    }
+    final bool result = await addNewTaskController.addNewTask(
+      _subjectTextEditingController.text.trim(),
+      _descriptionTextEditingController.text.trim(),
+    );
 
-    loadingDialog(context);
+    Get.back();
 
-    Map<String, dynamic> requestData = {
-      "title": _subjectTextEditingController.text.trim(),
-      "description": _descriptionTextEditingController.text.trim(),
-      "status": "New",
-    };
-
-    NetworkResponse response =
-        await NetworkCaller.postResponse(ApiUrl.createTask, body: requestData);
-
-    _addNewTaskInProgress = false;
-    if (mounted) {
-      setState(() {});
-    }
-
-    if (mounted) {
-      Navigator.pop(context);
-    }
-
-    if (response.isSuccess) {
+    if (result) {
+      _clearTextField();
       if (mounted) {
-        setCustomToast(
+        showCustomToast(
           "New task added!",
           Icons.done,
           AppColor.themeColor,
           AppColor.white,
         ).show(context);
         Navigator.pushNamedAndRemoveUntil(
-            context, AppRoute.mainBottomBar, (Route<dynamic> route) => false);
+          context,
+          AppRoute.mainBottomBar,
+          (Route<dynamic> route) => false,
+        );
       }
     } else {
       _clearTextField();
       if (mounted) {
-        setCustomToast(
+        showCustomToast(
           "New task add failed!",
           Icons.error_outline,
           AppColor.red,

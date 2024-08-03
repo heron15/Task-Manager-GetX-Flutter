@@ -23,6 +23,8 @@ dependencies:
   rename_app: ^1.6.1
   get: ^4.6.6
   connectivity_plus: ^5.0.2
+  loading_animation_widget: ^1.2.1
+  shimmer: ^3.0.0
 
 #------------------------------
 

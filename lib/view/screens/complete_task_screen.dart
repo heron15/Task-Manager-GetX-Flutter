@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 import 'package:task_manager/controllers/complete_task_controller.dart';
 import 'package:task_manager/utils/app_color.dart';
 import 'package:task_manager/utils/app_strings.dart';
-import 'package:task_manager/view/widgets/center_progress_indicator.dart';
 import 'package:task_manager/view/widgets/custom_toast.dart';
 import 'package:task_manager/view/widgets/no_task_widget.dart';
 import 'package:task_manager/view/widgets/section_header.dart';
+import 'package:task_manager/view/widgets/shimmer/task_item_shimmer_widget.dart';
 import 'package:task_manager/view/widgets/task_list_item.dart';
 
 class CompleteTaskScreen extends StatefulWidget {
@@ -17,14 +17,6 @@ class CompleteTaskScreen extends StatefulWidget {
 }
 
 class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
-  final CompleteTaskController _completeTaskController = Get.find<CompleteTaskController>();
-
-  @override
-  void initState() {
-    super.initState();
-    _getCompleteTask();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,13 +26,13 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
           return RefreshIndicator(
             color: AppColor.themeColor,
             onRefresh: () async {
-              _getCompleteTask();
+              _getCompleteTask(completeTaskController);
             },
-            child: completeTaskController.completeTaskInProgress
-                ? const CenterProgressIndicator()
-                : Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                    child: Column(
+            child: Padding(
+              padding: const EdgeInsets.all(15),
+              child: completeTaskController.completeTaskInProgress
+                  ? const TaskItemShimmerWidget()
+                  : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SectionHeader(title: "Complete Task"),
@@ -59,7 +51,7 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
                                       taskModel: completeTaskController.completeTaskList[index],
                                       labelBgColor: AppColor.completeLabelColor,
                                       onUpdateTask: () {
-                                        _getCompleteTask();
+                                        _getCompleteTask(completeTaskController);
                                       },
                                     );
                                   },
@@ -67,23 +59,25 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
                               ),
                       ],
                     ),
-                  ),
+            ),
           );
         },
       ),
     );
   }
 
-  void _getCompleteTask() async {
-    final bool result = await _completeTaskController.getCompleteTask();
+  void _getCompleteTask(CompleteTaskController completeTaskController) async {
+    final bool result = await completeTaskController.getCompleteTask();
 
     if (!result) {
-      setCustomToast(
-        _completeTaskController.errorMessage,
-        Icons.error_outline,
-        AppColor.red,
-        AppColor.white,
-      );
+      if (mounted) {
+        showCustomToast(
+          completeTaskController.errorMessage,
+          Icons.error_outline,
+          AppColor.red,
+          AppColor.white,
+        ).show(context);
+      }
     }
   }
 }

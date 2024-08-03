@@ -6,42 +6,42 @@ import 'package:task_manager/data/network_caller/network_caller.dart';
 import 'package:task_manager/utils/api_url.dart';
 import 'package:task_manager/utils/app_strings.dart';
 
-class CompleteTaskController extends GetxController {
-  bool _completeTaskInProgress = false;
-  List<TaskModel> _completeTaskList = [];
+class InProgressTaskController extends GetxController {
+  bool _inProgressTaskInProgress = false;
+  List<TaskModel> _inProgressTaskList = [];
   String _errorMessage = '';
 
-  bool get completeTaskInProgress => _completeTaskInProgress;
+  bool get inProgressTaskInProgress => _inProgressTaskInProgress;
 
-  List get completeTaskList => _completeTaskList;
+  List get inProgressTaskList => _inProgressTaskList;
 
   String get errorMessage => _errorMessage;
 
   @override
   void onInit() {
     super.onInit();
-    getCompleteTask();
+    getInProgressTask();
   }
 
-  Future<bool> getCompleteTask() async {
+  Future<bool> getInProgressTask() async {
     bool isSuccess = false;
 
-    _completeTaskInProgress = true;
+    _inProgressTaskInProgress = true;
     update();
 
-    NetworkResponse response = await NetworkCaller.getResponse(ApiUrl.completeTask);
+    NetworkResponse response = await NetworkCaller.getResponse(ApiUrl.progressTask);
 
     if (response.isSuccess) {
-      isSuccess = true;
       TaskListWrapperModel taskListWrapperModel =
           TaskListWrapperModel.fromJson(response.responseData);
-      _completeTaskList = taskListWrapperModel.taskList ?? [];
+      _inProgressTaskList = taskListWrapperModel.taskList ?? [];
+      isSuccess = true;
     } else {
-      isSuccess = false;
       _errorMessage = response.errorMessage ?? AppStrings.somethingWentWrong;
+      isSuccess = false;
     }
 
-    _completeTaskInProgress = false;
+    _inProgressTaskInProgress = false;
     update();
 
     return isSuccess;

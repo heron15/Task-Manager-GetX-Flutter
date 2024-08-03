@@ -149,7 +149,7 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void _registerUser() async {
-    loadingDialog(context);
+    loadingDialog();
 
     final bool result = await _signupController.signUp(
       _emailTextEditingController.text.trim(),
@@ -163,33 +163,28 @@ class _SignupScreenState extends State<SignupScreen> {
 
     if (result) {
       _clearTextField();
-      if (mounted) {
-        oneButtonDialog(
-          context,
-          AppColor.themeColor,
-          AppColor.themeColor,
-          AppStrings.success,
-          AppStrings.registrationSuccess,
-          Icons.task_alt,
-          () {
-            _onTapSignUpSuccess();
-          },
-        );
-      }
+
+      oneButtonDialog(
+        AppColor.themeColor,
+        AppColor.themeColor,
+        AppStrings.success,
+        AppStrings.registrationSuccess,
+        Icons.task_alt,
+        () {
+          _onTapSignUpSuccess();
+        },
+      );
     } else {
-      if (mounted) {
-        oneButtonDialog(
-          context,
-          AppColor.red,
-          AppColor.themeColor,
-          AppStrings.failed,
-          AppStrings.registrationFailed,
-          Icons.task_alt,
-          () {
-            Get.back();
-          },
-        );
-      }
+      oneButtonDialog(
+        AppColor.red,
+        AppColor.themeColor,
+        AppStrings.failed,
+        AppStrings.registrationFailed,
+        Icons.task_alt,
+        () {
+          Get.back();
+        },
+      );
     }
   }
 

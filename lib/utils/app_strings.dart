@@ -19,6 +19,8 @@ class AppStrings {
   static const String failed = "Failed!";
   static const String registrationFailed = "Registration failed, try again!";
   static const String loginErrorMessage = "Login failed! Try again.";
+  static const String addNewTaskFailed = "Add new task failed! Try again.";
+  static const String profileUpdateError = "Profile update failed! Try again.";
   static const String success = "Success!";
   static const String registrationSuccess = "Registration success. Now login!";
   static const String signupErrorMessage = "Signup failed! Try again.";
@@ -46,6 +48,10 @@ class AppStrings {
   static const String passwordNotMatch = "Password not match! Enter same password.";
   static const String passwordResetSuccess = "Password reset success.";
   static const String somethingWentWrong = "Something went wrong, try again.";
+
+  static const String validOtpEnter = "Please enter valid otp!";
+  static const String emailNotRegister = "This email is not registered!";
+  static const String resendSuccess = "Resend success!";
 
   ///------New Task screen------///
   static const String newTask = "New Task";

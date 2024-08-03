@@ -176,7 +176,7 @@ class _TaskListItemState extends State<TaskListItem> {
       setState(() {});
     }
 
-    loadingDialog(context);
+    loadingDialog();
 
     NetworkResponse response = await NetworkCaller.getResponse(
       ApiUrl.updateTaskStatus(widget.taskModel.sId!, status),
@@ -195,7 +195,7 @@ class _TaskListItemState extends State<TaskListItem> {
     if (response.isSuccess) {
       widget.onUpdateTask();
     } else {
-      setCustomToast(
+      showCustomToast(
         response.errorMessage ?? "Task status update failed!",
         Icons.error_outline,
         AppColor.red,
@@ -211,7 +211,7 @@ class _TaskListItemState extends State<TaskListItem> {
       setState(() {});
     }
 
-    loadingDialog(context);
+    loadingDialog();
 
     NetworkResponse response =
         await NetworkCaller.getResponse(ApiUrl.deleteTask(widget.taskModel.sId!));
@@ -219,7 +219,7 @@ class _TaskListItemState extends State<TaskListItem> {
     if (response.isSuccess) {
       widget.onUpdateTask();
     } else {
-      setCustomToast(
+      showCustomToast(
         response.errorMessage ?? "Task delete failed!",
         Icons.error_outline,
         AppColor.red,

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-
-import '../../utils/app_color.dart';
+import 'package:task_manager/app.dart';
+import 'package:task_manager/utils/app_color.dart';
 import 'elevated_text_button.dart';
 
 Future<dynamic> oneButtonDialog(
-  BuildContext context,
   Color iconColor,
   Color buttonColor,
   String header,
@@ -13,7 +12,7 @@ Future<dynamic> oneButtonDialog(
   VoidCallback onPressed,
 ) {
   return showDialog(
-    context: context,
+    context: TaskManager.navigatorKey.currentContext!,
     barrierDismissible: false,
     builder: (context) {
       return Dialog(

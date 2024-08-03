@@ -28,6 +28,13 @@ class NewTaskController extends GetxController {
 
   String get errorMessageForNewTaskList => _errorMessageForNewTaskList;
 
+  @override
+  void onInit() {
+    super.onInit();
+    getTaskCountByStatus();
+    getNewTask();
+  }
+
   ///------Task Count By Status List Part------///
   Future<bool> getTaskCountByStatus() async {
     bool isSuccess = false;

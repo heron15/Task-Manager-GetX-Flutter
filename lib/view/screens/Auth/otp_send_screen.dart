@@ -5,10 +5,10 @@ import 'package:task_manager/utils/app_color.dart';
 import 'package:task_manager/core/app_route.dart';
 import 'package:task_manager/utils/app_strings.dart';
 import 'package:task_manager/view/widgets/custom_text_form_field.dart';
+import 'package:task_manager/view/widgets/custom_toast.dart';
 import 'package:task_manager/view/widgets/elevated_icon_button.dart';
 import 'package:task_manager/utils/validate_checking_fun.dart';
 import 'package:task_manager/view/widgets/loading_dialog.dart';
-import 'package:task_manager/view/widgets/one_button_dialog.dart';
 import 'package:task_manager/view/widgets/rich_text_on_tap.dart';
 import 'package:task_manager/view/widgets/top_header_text.dart';
 
@@ -22,8 +22,6 @@ class OtpSendScreen extends StatefulWidget {
 class _OtpSendScreenState extends State<OtpSendScreen> {
   final TextEditingController _emailTextEditingController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  final OtpSendController _otpSendController = Get.find<OtpSendController>();
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +63,7 @@ class _OtpSendScreenState extends State<OtpSendScreen> {
                     icon: Icons.arrow_circle_right_outlined,
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        _sendOtp();
+                        _sendOtp(otpSendController);
                       }
                     },
                   );
@@ -87,12 +85,12 @@ class _OtpSendScreenState extends State<OtpSendScreen> {
     );
   }
 
-  void _sendOtp() async {
+  void _sendOtp(OtpSendController otpSendController) async {
     String email = _emailTextEditingController.text.trim();
 
-    loadingDialog(context);
+    loadingDialog();
 
-    int resultCode = await _otpSendController.otpSend(email);
+    int resultCode = await otpSendController.otpSend(email);
 
     Get.back();
 
@@ -101,32 +99,22 @@ class _OtpSendScreenState extends State<OtpSendScreen> {
     } else if (resultCode == 2) {
       _clearTextField();
       if (mounted) {
-        oneButtonDialog(
-          context,
+        showCustomToast(
+          AppStrings.emailNotRegister,
+          Icons.error_outline,
           AppColor.red,
-          AppColor.themeColor,
-          "Invalid Email!",
-          "This email is not registered!",
-          Icons.error_outline_rounded,
-          () {
-            Get.back();
-          },
-        );
+          AppColor.white,
+        ).show(context);
       }
     } else {
       _clearTextField();
       if (mounted) {
-        oneButtonDialog(
-          context,
+        showCustomToast(
+          AppStrings.somethingWentWrong,
+          Icons.error_outline,
           AppColor.red,
-          AppColor.themeColor,
-          "Failed!",
-          "Something went wrong!",
-          Icons.task_alt,
-          () {
-            Get.back();
-          },
-        );
+          AppColor.white,
+        ).show(context);
       }
     }
   }

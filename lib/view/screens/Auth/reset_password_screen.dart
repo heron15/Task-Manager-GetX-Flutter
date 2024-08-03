@@ -96,7 +96,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       if (_formKey.currentState!.validate()) {
                         if (_passwordTextEditingController.text !=
                             _confirmPasswordTextEditingController.text) {
-                          setCustomToast(
+                          showCustomToast(
                             AppStrings.passwordNotMatch,
                             Icons.error_outline,
                             AppColor.red,
@@ -127,7 +127,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   }
 
   void _resetPassword() async {
-    loadingDialog(context);
+    loadingDialog();
 
     final bool result = await _resetPasswordController.resetPassword(
       widget.email,
@@ -139,34 +139,29 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
     if (result) {
       _clearTextField();
-      if (mounted) {
-        oneButtonDialog(
-          context,
-          AppColor.themeColor,
-          AppColor.themeColor,
-          AppStrings.success,
-          AppStrings.passwordResetSuccess,
-          Icons.task_alt,
-          () {
-            _onTapSuccess();
-          },
-        );
-      }
+
+      oneButtonDialog(
+        AppColor.themeColor,
+        AppColor.themeColor,
+        AppStrings.success,
+        AppStrings.passwordResetSuccess,
+        Icons.task_alt,
+        () {
+          _onTapSuccess();
+        },
+      );
     } else {
       _clearTextField();
-      if (mounted) {
-        oneButtonDialog(
-          context,
-          AppColor.red,
-          AppColor.themeColor,
-          AppStrings.failed,
-          AppStrings.somethingWentWrong,
-          Icons.task_alt,
-          () {
-            Navigator.pop(context);
-          },
-        );
-      }
+      oneButtonDialog(
+        AppColor.red,
+        AppColor.themeColor,
+        AppStrings.failed,
+        AppStrings.somethingWentWrong,
+        Icons.task_alt,
+        () {
+          Navigator.pop(context);
+        },
+      );
     }
   }
 

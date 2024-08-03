@@ -20,6 +20,8 @@ class AppStrings {
   static const String registrationFailed = "Registration failed, try again!";
   static const String loginErrorMessage = "Login failed! Try again.";
   static const String addNewTaskFailed = "Add new task failed! Try again.";
+  static const String taskUpdateFailed = "Task update failed! Try again.";
+  static const String taskDeleteFailed = "Task delete failed! Try again.";
   static const String profileUpdateError = "Profile update failed! Try again.";
   static const String success = "Success!";
   static const String registrationSuccess = "Registration success. Now login!";

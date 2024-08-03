@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:task_manager/utils/app_color.dart';
 import 'package:task_manager/view/widgets/shimmer/inner/header_text_shimmer.dart';
 import 'package:task_manager/view/widgets/shimmer/inner/shimmer_widget.dart';

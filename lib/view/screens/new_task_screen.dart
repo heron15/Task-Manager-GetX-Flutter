@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:task_manager/controllers/internet_connection_controller.dart';
 import 'package:task_manager/controllers/new_task_controller.dart';
 import 'package:task_manager/utils/app_color.dart';
 import 'package:task_manager/utils/app_strings.dart';
 import 'package:task_manager/view/widgets/custom_toast.dart';
+import 'package:task_manager/view/widgets/no_internet_widget.dart';
 import 'package:task_manager/view/widgets/no_task_widget.dart';
 import 'package:task_manager/view/widgets/section_header.dart';
 import 'package:task_manager/view/widgets/shimmer/task_item_shimmer_widget.dart';
@@ -23,22 +25,28 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.white,
-      body: GetBuilder<NewTaskController>(
-        builder: (newTaskController) {
-          return RefreshIndicator(
-            color: AppColor.themeColor,
-            onRefresh: () async {
-              _getNewTask(newTaskController);
-              _getTaskCountByStatus(newTaskController);
-            },
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              children: [
-                summaryListWidget(newTaskController),
-                taskListWidget(newTaskController),
-              ],
-            ),
-          );
+      body: GetBuilder<InternetConnectionController>(
+        builder: (internetConnectionController) {
+          return !internetConnectionController.connectionStatus
+              ? const NoInternetWidget()
+              : GetBuilder<NewTaskController>(
+                  builder: (newTaskController) {
+                    return RefreshIndicator(
+                      color: AppColor.themeColor,
+                      onRefresh: () async {
+                        _getNewTask(newTaskController);
+                        _getTaskCountByStatus(newTaskController);
+                      },
+                      child: ListView(
+                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        children: [
+                          summaryListWidget(newTaskController),
+                          taskListWidget(newTaskController),
+                        ],
+                      ),
+                    );
+                  },
+                );
         },
       ),
     );

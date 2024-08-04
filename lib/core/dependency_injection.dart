@@ -12,7 +12,6 @@ import 'package:task_manager/controllers/auth/otp_verification_controller.dart';
 import 'package:task_manager/controllers/auth/reset_password_controller.dart';
 import 'package:task_manager/controllers/auth/signup_controller.dart';
 import 'package:task_manager/controllers/auth/user_controller.dart';
-import 'package:task_manager/controllers/task_list_item_controller.dart';
 import 'package:task_manager/controllers/update_profile_controller.dart';
 
 class DependencyInjection extends Bindings {

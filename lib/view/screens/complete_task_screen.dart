@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task_manager/controllers/complete_task_controller.dart';
+import 'package:task_manager/controllers/internet_connection_controller.dart';
 import 'package:task_manager/utils/app_color.dart';
 import 'package:task_manager/utils/app_strings.dart';
 import 'package:task_manager/view/widgets/custom_toast.dart';
+import 'package:task_manager/view/widgets/no_internet_widget.dart';
 import 'package:task_manager/view/widgets/no_task_widget.dart';
 import 'package:task_manager/view/widgets/section_header.dart';
 import 'package:task_manager/view/widgets/shimmer/task_item_shimmer_widget.dart';
@@ -21,46 +23,54 @@ class _CompleteTaskScreenState extends State<CompleteTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.white,
-      body: GetBuilder<CompleteTaskController>(
-        builder: (completeTaskController) {
-          return RefreshIndicator(
-            color: AppColor.themeColor,
-            onRefresh: () async {
-              _getCompleteTask(completeTaskController);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(15),
-              child: completeTaskController.completeTaskInProgress
-                  ? const TaskItemShimmerWidget()
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SectionHeader(title: "Complete Task"),
-                        completeTaskController.completeTaskList.isEmpty
-                            ? const Expanded(
-                                child: NoTaskWidget(
-                                  height: double.maxFinite,
-                                  text: AppStrings.noTaskAvailable,
-                                ),
-                              )
-                            : Expanded(
-                                child: ListView.builder(
-                                  itemCount: completeTaskController.completeTaskList.length,
-                                  itemBuilder: (context, index) {
-                                    return TaskListItem(
-                                      taskModel: completeTaskController.completeTaskList[index],
-                                      labelBgColor: AppColor.completeLabelColor,
-                                      onUpdateTask: () {
-                                        _getCompleteTask(completeTaskController);
-                                      },
-                                    );
-                                  },
-                                ),
+      body: GetBuilder<InternetConnectionController>(
+        builder: (internetConnectionController) {
+          return !internetConnectionController.connectionStatus
+              ? const NoInternetWidget()
+              : GetBuilder<CompleteTaskController>(
+                  builder: (completeTaskController) {
+                    return RefreshIndicator(
+                      color: AppColor.themeColor,
+                      onRefresh: () async {
+                        _getCompleteTask(completeTaskController);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: completeTaskController.completeTaskInProgress
+                            ? const TaskItemShimmerWidget()
+                            : Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SectionHeader(title: "Complete Task"),
+                                  completeTaskController.completeTaskList.isEmpty
+                                      ? const Expanded(
+                                          child: NoTaskWidget(
+                                            height: double.maxFinite,
+                                            text: AppStrings.noTaskAvailable,
+                                          ),
+                                        )
+                                      : Expanded(
+                                          child: ListView.builder(
+                                            itemCount:
+                                                completeTaskController.completeTaskList.length,
+                                            itemBuilder: (context, index) {
+                                              return TaskListItem(
+                                                taskModel:
+                                                    completeTaskController.completeTaskList[index],
+                                                labelBgColor: AppColor.completeLabelColor,
+                                                onUpdateTask: () {
+                                                  _getCompleteTask(completeTaskController);
+                                                },
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                ],
                               ),
-                      ],
-                    ),
-            ),
-          );
+                      ),
+                    );
+                  },
+                );
         },
       ),
     );

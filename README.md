@@ -1,6 +1,20 @@
-# task_manager
+# Task Manager App
 
-A Complete Task Manager Project.
+A complete task manager app manage your daily task.
+
+# The technology I used to make this App.
+
+<ol>
+    <li>
+        Using GetX state management(GetBuilder).
+    </li>
+    <li>
+        Used REST API.
+    </li>
+    <li>
+        Internet connection status handle used.
+    </li>
+</ol>
 
 ## Screenshots
 
@@ -19,9 +33,6 @@ A Complete Task Manager Project.
     <img src="screenshots/s12.jpg" alt="Home Screen" width="150" height="300" style="margin-right: 30px;">
     <img src="screenshots/s13.jpg" alt="Home Screen" width="150" height="300" style="margin-right: 30px;">
     <img src="screenshots/s14.jpg" alt="Home Screen" width="150" height="300" style="margin-right: 30px;">
-    <img src="screenshots/s15.jpg" alt="Home Screen" width="150" height="300" style="margin-right: 30px;">
-    <img src="screenshots/s16.jpg" alt="Home Screen" width="150" height="300" style="margin-right: 30px;">
-    <img src="screenshots/s17.jpg" alt="Home Screen" width="150" height="300" style="margin-right: 30px;">
 </div>
 
 This project is a starting point for a Flutter application.

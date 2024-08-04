@@ -12,7 +12,10 @@ A complete task manager app manage your daily task.
         Used REST API.
     </li>
     <li>
-        Internet connection status handle used.
+        Used Login, SignUp and Forgot Password functionality.
+    </li>
+    <li>
+        Used modern navigation bar.
     </li>
 </ol>
 
